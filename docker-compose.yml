@@ -6,9 +6,10 @@ services:
       - "80:80"
     volumes:
       - ./backend/app:/var/www
-      - ./docker/nginx/backend.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
+      - frontend
     networks:
       - api-network
 
@@ -35,6 +36,19 @@ services:
       - "3306:3306"
     volumes:
       - database_data:/var/lib/mysql
+    networks:
+      - api-network
+  frontend:
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: ./docker/frontend/Dockerfile
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
     networks:
       - api-network
 volumes:
