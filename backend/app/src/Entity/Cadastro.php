@@ -9,6 +9,12 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: CadastroRepository::class)]
 class Cadastro
 {
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::v4();
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,7 +32,7 @@ class Cadastro
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $rua = null;
 
     #[ORM\Column(length: 255, nullable: true)]
