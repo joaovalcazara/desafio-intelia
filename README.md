@@ -1,5 +1,20 @@
 # desafio-intelia
 
+## Execução
+
+- Pré-requisitos:
+  - `make` instalado na máquina
+  - Docker Desktop instalado e em execução
+
+- Inicialização:
+  1. No diretório do projeto, execute:
+
+     ```bash
+     make setup
+     ```
+
+  2. Aguarde os containers e serviços inicializarem.
+ 
 # Backend – Cadastro Multi-etapa (Symfony 7)
 
 ## Visão Geral
