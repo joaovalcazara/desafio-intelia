@@ -4,6 +4,7 @@ import axios from 'axios';
 import EtapaUm from './views/EtapaUm.vue';
 import EtapaDois from './views/EtapaDois.vue';
 import EtapaTres from './views/EtapaTres.vue';
+import HeaderApp from './components/HeaderApp.vue';
 
 const etapa = ref(1);
 const uuid = ref(localStorage.getItem('cadastro_uuid'));
@@ -34,11 +35,11 @@ const proximo = (novoUuid) => {
 
 
 <template>
-  <div class="app-wrapper">
-    <div class="card md-elevation-2">
-      
- 
 
+  <HeaderApp :etapa="etapa" />
+
+  <div class="app-wrapper">
+    <div class="card md-elevation-2">  
       <transition name="fade" mode="out-in">
         <component 
           :is="views[etapa - 1]" 
