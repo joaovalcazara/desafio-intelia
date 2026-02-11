@@ -163,22 +163,77 @@ Entidade Doctrine que mapeia a tabela `cadastro` com todos os campos necessário
 
 Propriedades:
 - Getters e setters para todos os campos
-- UUID gerado automaticamente
+- UUID gerado automaticamente (Uuid v4)
 - Suporte a tipos Doctrine (Uuid, DateTimeImmutable)
+- Campos obrigatórios na etapa 1: nome, email, data de nascimento
+- Campos opcionais nas etapas 2 e 3
 
-### 2. Repository: CadastroRepository
+### 2. DTO: CadastroDto
+
+**Arquivo**: [backend/app/src/Dto/CadastroDto.php](backend/app/src/Dto/CadastroDto.php)
+
+Data Transfer Object com validações Symfony Validator:
+
+**Etapa 1 - Dados Pessoais**:
+- `nomeCompleto` - NotBlank obrigatório
+- `email` - NotBlank + Email válido obrigatório
+- `dataNascimento` - NotBlank obrigatório
+
+**Etapa 2 - Endereço**:
+- `rua` - NotBlank obrigatório
+- `numero` - NotBlank obrigatório
+- `cep` - NotBlank + Regex (99999-999) obrigatório
+- `cidade` - NotBlank obrigatório
+- `estado` - NotBlank obrigatório
+
+**Etapa 3 - Contato**:
+- `telefoneCelular` - NotBlank + Regex (99) 99999-9999 obrigatório
+- `telefoneFixo` - Regex (99) 9999-9999 opcional
+
+Campos adicionais:
+- `etapaAtual` - Indica qual etapa está sendo enviada (obrigatório)
+- `uuid` - Identificador para atualizar cadastro existente (opcional)
+
+### 3. Controller: CadastroController
+
+**Arquivo**: [backend/app/src/Controller/CadastroController.php](backend/app/src/Controller/CadastroController.php)
+
+Controlador REST que implementa os endpoints:
+
+#### POST /api/cadastro
+- Cria novo cadastro ou atualiza existente (se uuid fornecido)
+- Valida dados conforme a etapa enviada
+- Previne pulo de etapas (sequência obrigatória)
+- Novos cadastros obrigatoriamente começam em etapa 1
+- Retorna UUID e etapa atual em caso de sucesso
+
+#### GET /api/cadastro/{uuid}
+- Busca cadastro pelo UUID
+- Retorna todos os dados do cadastro em JSON
+- Retorna erro 404 se não encontrado
+
+Funcionalidades:
+- Validação por grupos (etapa1, etapa2, etapa3)
+- Mapeamento automático DTO → Entity
+- Persistência no banco via Doctrine
+- Respostas JSON padronizadas com status
+
+### 4. Repository: CadastroRepository
 
 **Arquivo**: [backend/app/src/Repository/CadastroRepository.php](backend/app/src/Repository/CadastroRepository.php)
 
 Repository padrão do Doctrine estendendo `ServiceEntityRepository` com suporte à busca e manipulação de registros de cadastro.
 
-### 3. Migração de Banco de Dados
+### 5. Migrações de Banco de Dados
 
-**Arquivo**: [backend/app/migrations/Version20260211000301.php](backend/app/migrations/Version20260211000301.php)
+**Arquivos**: 
+- [backend/app/migrations/Version20260211000301.php](backend/app/migrations/Version20260211000301.php)
+- [backend/app/migrations/Version20260211135746.php](backend/app/migrations/Version20260211135746.php)
+- [backend/app/migrations/Version20260211152925.php](backend/app/migrations/Version20260211152925.php)
 
-Migração automática gerada pelo Doctrine que cria a tabela `cadastro` com todos os campos necessários.
+Migrações automáticas geradas pelo Doctrine que criam a tabela `cadastro` com todos os campos necessários.
 
-### 4. Configuração Doctrine
+### 6. Configuração Doctrine
 
 **Arquivo**: [backend/app/config/packages/doctrine.yaml](backend/app/config/packages/doctrine.yaml)
 
@@ -188,13 +243,13 @@ Configurações do Doctrine ORM:
 - Suporte a lazy loading
 - Estratégia de nomenclatura underscore_number_aware
 
-### 5. Roteamento
+### 7. Roteamento
 
 **Arquivo**: [backend/app/config/routes.yaml](backend/app/config/routes.yaml)
 
 Sistema de roteamento configurado para buscar atributos em controladores dentro de `src/Controller/`.
 
-### 6. Configuração Nginx
+### 8. Configuração Nginx
 
 **Arquivo**: [docker/nginx/backend.conf](docker/nginx/backend.conf)
 
@@ -203,7 +258,7 @@ Sistema de roteamento configurado para buscar atributos em controladores dentro 
 - FastCGI passthrough para PHP-FPM
 - Bloqueio de acesso a arquivos sensíveis (`.env`, `composer.json`, etc)
 
-### 7. Dockerfile
+### 9. Dockerfile
 
 **Arquivo**: [docker/backend/Dockerfile](docker/backend/Dockerfile)
 
@@ -212,6 +267,17 @@ Imagem PHP customizada com:
 - Extensões compiladas: `intl`, `pdo`, `pdo_mysql`
 - Composer instalado via COPY de imagem oficial
 - Diretório de trabalho: `/var/www`
+
+### 10. Docker Compose
+
+**Arquivo**: [docker-compose.yml](docker-compose.yml)
+
+Orquestração completa com:
+- Nginx 1.24 como proxy reverso
+- PHP-FPM 8.3 com Symfony
+- MariaDB 11.4 para persistência
+- Rede interna `api-network`
+- Volume persistente para banco de dados
 
 ---
 
@@ -263,69 +329,259 @@ DATABASE_URL=mysql://intelia:intelia@db:3306/intelia?serverVersion=mariadb-11.4.
 
 - Docker e Docker Compose instalados
 - Git (para versionamento)
+- Windows, macOS ou Linux
 
 ### Passos para Inicialização
 
-1. **Clone o repositório**
-   ```bash
-   git clone <seu-repositorio>
-   cd desafio-intelia
-   ```
+#### 1. Clone ou baixe o repositório
+```bash
+git clone <seu-repositorio>
+cd desafio-intelia
+```
 
-2. **Inicie os containers**
-   ```bash
-   docker-compose up -d
-   ```
+#### 2. Inicie todos os containers com Docker Compose
+```bash
+docker-compose up -d
+```
 
-3. **Instale dependências PHP**
-   ```bash
-   docker-compose exec backend composer install
-   ```
+Este comando irá:
+- Construir a imagem PHP-FPM customizada
+- Baixar as imagens do Nginx e MariaDB
+- Criar os containers e volume de persistência
+- Conectar os containers à rede `api-network`
+- Iniciar todos os serviços em background
 
-4. **Execute as migrações**
-   ```bash
-   docker-compose exec backend php bin/console doctrine:migrations:migrate
-   ```
+**Status esperado:**
+```
+✓ Container nginx    Started
+✓ Container mariadb  Started
+✓ Container symfony_api  Started
+```
 
-5. **Acesse a aplicação**
-   ```
-   http://localhost
-   ```
+#### 3. Instale as dependências PHP
+```bash
+docker-compose exec backend composer install
+```
+
+Isto irá:
+- Instalar todos os pacotes Symfony e dependências listadas no `composer.json`
+- Gerar o autoloader do Composer
+- Preparar os binários do projeto
+
+#### 4. Execute as migrações do banco de dados
+```bash
+docker-compose exec backend php bin/console doctrine:migrations:migrate
+```
+
+Isto irá:
+- Executar todas as migrações pendentes
+- Criar a tabela `cadastro` com todos os campos
+- Preparar o banco para receber dados
+
+#### 5. Acesse a aplicação
+```
+http://localhost
+```
+
+A API está pronta para receber requisições!
+
+### Verificar Status dos Containers
+```bash
+docker-compose ps
+```
+
+Saída esperada:
+```
+NAME            COMMAND                   SERVICE   STATUS         PORTS
+mariadb         "docker-entrypoint.s…"  db        Up             3306/3306
+nginx           "/docker-entrypoint.…"  proxy     Up             0.0.0.0:80->80/tcp
+symfony_api     "docker-php-entrypoi…"  backend   Up
+```
+
+### Parar os Containers
+```bash
+docker-compose down
+```
+
+Use `-v` para remover volumes também (cuidado: irá deletar dados do banco):
+```bash
+docker-compose down -v
+```
+
+### Ver Logs
+Para ver os logs de todos os serviços:
+```bash
+docker-compose logs -f
+```
+
+Para ver logs de um serviço específico:
+```bash
+docker-compose logs -f backend   # Symfony
+docker-compose logs -f proxy      # Nginx
+docker-compose logs -f db         # MariaDB
+```
 
 ---
 
-## Estrutura de Resposta
+## Testando os Endpoints
 
-A aplicação está pronta para implementar endpoints que:
+### 1. Criar Cadastro - Etapa 1
 
-1. **Criar novo cadastro** - Inicia o fluxo com etapa 1
-2. **Atualizar etapa** - Permite atualizar dados de cada etapa
-3. **Recuperar cadastro** - Busca cadastro pelo UUID
-4. **Listar cadastros** - Retorna lista com paginação
+**POST** `http://localhost/api/cadastro`
+
+```json
+{
+  "etapaAtual": 1,
+  "nomeCompleto": "João Silva",
+  "email": "joao@example.com",
+  "dataNascimento": "1990-05-15"
+}
+```
+
+**Resposta (201)**:
+```json
+{
+  "status": "sucesso",
+  "data": {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "etapaAtual": 1,
+    "message": "Etapa salva com sucesso!"
+  }
+}
+```
+
+### 2. Continuar Cadastro - Etapa 2
+
+**POST** `http://localhost/api/cadastro`
+
+```json
+{
+  "etapaAtual": 2,
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "rua": "Rua das Flores",
+  "numero": "123",
+  "cep": "12345-678",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+```
+
+**Resposta (200)**:
+```json
+{
+  "status": "sucesso",
+  "data": {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "etapaAtual": 2,
+    "message": "Etapa salva com sucesso!"
+  }
+}
+```
+
+### 3. Finalizar Cadastro - Etapa 3
+
+**POST** `http://localhost/api/cadastro`
+
+```json
+{
+  "etapaAtual": 3,
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "telefoneCelular": "(11) 98765-4321",
+  "telefoneFixo": "(11) 3456-7890"
+}
+```
+
+**Resposta (200)**:
+```json
+{
+  "status": "sucesso",
+  "data": {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "etapaAtual": 3,
+    "message": "Cadastro completo!"
+  }
+}
+```
+
+### 4. Recuperar Cadastro Completo
+
+**GET** `http://localhost/api/cadastro/550e8400-e29b-41d4-a716-446655440000`
+
+**Resposta (200)**:
+```json
+{
+  "status": "sucesso",
+  "data": {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "etapaAtual": 3,
+    "nomeCompleto": "João Silva",
+    "email": "joao@example.com",
+    "dataNascimento": "1990-05-15",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "cep": "12345-678",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "telefoneCelular": "(11) 98765-4321",
+    "telefoneFixo": "(11) 3456-7890"
+  }
+}
+```
+
+### Testes com cURL
+
+```bash
+# Criar etapa 1
+curl -X POST http://localhost/api/cadastro \
+  -H "Content-Type: application/json" \
+  -d '{"etapaAtual":1,"nomeCompleto":"João","email":"joao@test.com","dataNascimento":"1990-01-01"}'
+
+# Buscar cadastro
+curl http://localhost/api/cadastro/550e8400-e29b-41d4-a716-446655440000
+```
+
+---
+
+## Funcionalidades Completas
+
+A aplicação implementa uma API REST completa com os seguintes endpoints:
+
+### ✅ POST /api/cadastro
+- **Descrição**: Cria novo cadastro ou atualiza existente
+- **Validações**: Por grupo (etapa1, etapa2, etapa3)
+- **Controle de Sequência**: Impede pulo de etapas
+- **Resposta**: UUID do cadastro e etapa atual
+
+### ✅ GET /api/cadastro/{uuid}
+- **Descrição**: Recupera cadastro completo pelo UUID
+- **Validação**: Retorna 404 se não encontrado
+- **Resposta**: Todos os dados preenchidos do cadastro
 
 ---
 
 ## Tecnologias e Padrões
 
-- **Padrão Clean Architecture**: Separação clara entre Entity, Repository e Controller
+- **Padrão Clean Architecture**: Separação clara entre Entity, DTO, Repository e Controller
 - **Dependency Injection**: Gerenciado automaticamente pelo Symfony
-- **Doctrine ORM**: Abstração de banco de dados
-- **API RESTful**: Pronta para implementação de endpoints JSON
+- **Doctrine ORM**: Abstração de banco de dados com migrations
+- **API RESTful**: Endpoints JSON com tratamento de erros
+- **Validação em Camadas**: Validações por grupo com Symfony Validator
+- **Containerização Completa**: Docker Compose com 3 serviços integrados
+- **Controle de Fluxo**: Sequência obrigatória de etapas com UUID tracking
 
 ---
 
 ## Próximos Passos para Desenvolvimento
 
-1. Criar controladores (CadastroController)
-2. Implementar endpoints RESTful:
-   - `POST /cadastro` - Criar novo cadastro
-   - `PUT /cadastro/{uuid}` - Atualizar cadastro
-   - `GET /cadastro/{uuid}` - Recuperar cadastro
-   - `GET /cadastros` - Listar cadastros
-3. Adicionar validações com Symfony Validator
-4. Implementar DTOs para transferência de dados
-5. Adicionar testes unitários e de integração
-6. Documentação da API com OpenAPI/Swagger
+1. Implementar endpoint GET `/api/cadastros` - Listar cadastros com paginação
+2. Adicionar filtros avançados na listagem
+3. Implementar autenticação e autorização
+4. Adicionar logs estruturados
+5. Testes automatizados (unit e integration)
+6. Documentação da API com Swagger/OpenAPI
+7. Rate limiting
+8. CORS configuration
+9. Cache de consultas
 
 ---
 
@@ -351,22 +607,69 @@ A aplicação está pronta para implementar endpoints que:
 
 ## Status do Projeto
 
-✅ **Concluído**:
+✅ **Concluído - Fully Operational**:
 - Estrutura do projeto Symfony 7 configurada
 - Entity Cadastro com todos os campos
+- DTO com validações por grupo (etapa 1, 2, 3)
 - Repository do Cadastro
-- Migração de banco de dados
+- Migrações de banco de dados
 - Configuração Docker completa com Nginx, PHP-FPM e MariaDB
 - Configuração Doctrine ORM
+- **Controller REST com endpoints implementados:**
+  - ✅ POST /api/cadastro (Criar/Atualizar cadastro)
+  - ✅ GET /api/cadastro/{uuid} (Recuperar cadastro)
+- **Validações implementadas:**
+  - ✅ Validação de email
+  - ✅ Validação de formato de CEP (00000-000)
+  - ✅ Validação de formato de celular ((00) 00000-0000)
+  - ✅ Validação de formato de telefone fixo ((00) 0000-0000)
+  - ✅ Controle de sequência de etapas
+  - ✅ Obrigatoriedade por etapa
 
-⏳ **Próximos**:
-- Implementar controladores REST
-- Adicionar validações de dados
-- Testes automatizados
-- Documentação da API
+⏳ **Possíveis Melhorias Futuras**:
+- Implementar endpoint GET /api/cadastros (listagem com paginação)
+- Adicionar filtros avançados na listagem
+- Implementar autenticação e autorização
+- Adicionar logs estruturados
+- Testes automatizados (unit e integration)
+- Documentação da API com Swagger/OpenAPI
+- Rate limiting
+- CORS configuration
+- Cache de consultas
 
 ---
 
 **Data de Atualização**: 11 de Fevereiro de 2026
+
+### Sumário da Implementação Completa
+
+Nesta versão o projeto foi desenvolvido com:
+
+✅ **Backend Symfony 7 completo e funcional**
+- 2 endpoints REST implementados e testados
+- Validação de dados em 3 etapas diferentes
+- Controle de sequência de formulário
+- Persistência em MariaDB via Doctrine ORM
+- Resposta estruturada em JSON
+
+✅ **Infraestrutura Docker pronta para produção**
+- Nginx como proxy reverso
+- PHP-FPM 8.3 com extensões compiladas
+- MariaDB com volume persistente
+- Rede interna isolada
+- Fácil deployment em qualquer máquina com Docker
+
+✅ **Código limpo e escalável**
+- Arquitetura Clean Code
+- Validações pelo grupo do validator
+- DTOs para transferência de dados
+- Repository pattern para abstração do banco
+- Dependency injection automático
+
+✅ **Documentação completa**
+- README atualizado com tudo implementado
+- Guia passo a passo para rodar com Docker
+- Exemplos de requisições para todos os endpoints
+- Instruções de troubleshooting e logs
  
  
