@@ -15,7 +15,7 @@ class Cadastro
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $step = null;
+    private ?int $etapa = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nomeCompleto = null;
@@ -55,14 +55,14 @@ class Cadastro
         return $this->id;
     }
 
-    public function getStep(): ?int
+    public function getEtapa(): ?int
     {
-        return $this->step;
+        return $this->etapa;
     }
 
-    public function setStep(int $step): static
+    public function setEtapa(int $etapa): static
     {
-        $this->step = $step;
+        $this->etapa = $etapa;
 
         return $this;
     }
