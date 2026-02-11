@@ -35,7 +35,10 @@ const avancar = async () => {
     const { data } = await axios.post('/cadastro', payload);
     emit('avancar', data.data.uuid); 
   } catch (e) {
-    alert(e.response?.data?.message || "Erro no Passo 1");
+    if (e.response?.status === 404) {
+        localStorage.removeItem('cadastro_uuid');
+        uuid.value = null;
+    }
   } finally {
     loading.value = false;
   }
