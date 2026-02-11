@@ -41,8 +41,8 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./
-      dockerfile: ./docker/frontend/Dockerfile
+      context: ./frontend
+      dockerfile: ../docker/frontend/Dockerfile
     working_dir: /app
     volumes:
       - ./frontend:/app
