@@ -5,6 +5,12 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install intl pdo pdo_mysql
 
+RUN docker-php-ext-install opcache
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY docker/backend/opcache.ini /usr/local/etc/php/conf.d/z-opcache.ini
+
+COPY docker/backend/www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www
