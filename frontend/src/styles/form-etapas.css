@@ -1,0 +1,101 @@
+
+.step-view {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.md-title {
+    color: #00172c;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.md-subtitle {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+.md-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.md-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.md-field label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.md-field input, 
+.md-field select, 
+.md-field textarea {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.md-field input:focus {
+    border-color: #00d2ff;
+    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.md-button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 20px;
+}
+
+.md-button.primary {
+    background-color: #00172c;
+    color: white;
+}
+
+.md-button.primary:hover {
+    background-color: #00d2ff;  
+}
+
+.md-button.secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+ 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

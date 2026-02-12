@@ -5,7 +5,7 @@ import EtapaUm from './views/EtapaUm.vue';
 import EtapaDois from './views/EtapaDois.vue';
 import EtapaTres from './views/EtapaTres.vue';
 import HeaderApp from './components/HeaderApp.vue';
-
+import './styles/app.css';
 const etapa = ref(1);
 const uuid = ref(localStorage.getItem('cadastro_uuid'));
 const dadosIniciais = ref(null);
@@ -15,9 +15,8 @@ onMounted(async () => {
   if (uuid.value) {
     try {
       const { data } = await axios.get(`/cadastro/${uuid.value}`);
-      // Seu controller retorna 'data' dentro de 'data'
       dadosIniciais.value = data.data; 
-      etapa.value = data.data.etapaAtual; // Retoma na etapa exata onde parou
+      etapa.value = data.data.etapaAtual; 
     } catch (e) {
       console.error("Cadastro não encontrado, iniciando do zero.");
       localStorage.removeItem('cadastro_uuid');
@@ -35,22 +34,21 @@ const proximo = (novoUuid) => {
 
 
 <template>
-
   <HeaderApp :etapa="etapa" />
 
-  <div class="app-wrapper">
-    <div class="card md-elevation-2">  
+  <main class="main-container">
+    <div class="form-card">
       <transition name="fade" mode="out-in">
         <component 
           :is="views[etapa - 1]" 
           :uuid="uuid"
           :dados-iniciais="dadosIniciais"
-          @avancar="proximo"
+          @avancar="proximo" 
           @voltar="etapa--"
-          @sucesso="finalizarTudo"
         />
       </transition>
-
     </div>
-  </div>
+  </main>
 </template>
+
+ 

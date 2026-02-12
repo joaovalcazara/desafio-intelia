@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref, watchEffect } from 'vue';
 import axios from 'axios';
+import '../styles/form-etapas.css';
 
 const emit = defineEmits(['avancar']);
 const loading = ref(false);
@@ -45,12 +46,15 @@ const avancar = async () => {
 };
 </script>
 
+ 
+
 <template>
   <div class="step-view">
-    <h2 class="md-title">Identificação</h2>
-    <p class="md-subtitle">Conte-nos quem você é para começar seu registro.</p>
+    <div class="form-header">
+      <h2 class="md-title" style="margin-bottom: 20px;">Identificação</h2>
+    </div>
     
-    <form @submit.prevent="avancar">
+    <form @submit.prevent="avancar" class="md-form">
       <div class="md-field">
         <label>Nome Completo</label>
         <input v-model="form.nomeCompleto" type="text" required placeholder="Digite seu nome">
@@ -66,9 +70,13 @@ const avancar = async () => {
         <input v-model="form.email" type="email" required placeholder="seu@email.com">
       </div>
 
-      <button type="submit" class="md-button primary" :disabled="loading">
-        {{ loading ? 'Iniciando...' : 'Próximo' }}
-      </button>
+      <div class="actions">
+        <button type="submit" class="md-button primary" :disabled="loading">
+          {{ loading ? 'Enviando...' : 'Próximo' }}
+        </button>
+      </div>
     </form>
   </div>
 </template>
+
+ 

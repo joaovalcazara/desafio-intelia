@@ -2,10 +2,14 @@
 import { reactive, ref } from 'vue';
 import { vMaska } from "maska/vue";
 import axios from 'axios';
+import MensagemAlert from '../components/MensagemAlert.vue';
 
 const props = defineProps(['uuid', 'dadosIniciais']);
 const emit = defineEmits(['avancar', 'voltar']);
-const loading = ref(false);
+const loading = ref(false); 
+const showError = ref(false);
+const errorMessage = ref('');
+
 
 const form = reactive(props.dadosIniciais || {
     cep: '', 
@@ -27,7 +31,8 @@ const avancar = async () => {
     await axios.post('/cadastro', payload);
     emit('avancar');
   } catch (e) {
-    alert(e.response?.data?.message || "Erro no Passo 2");
+    errorMessage.value = e.response?.data?.message || "Erro ao avançar para a próxima etapa.";
+    showError.value = true; 
   } finally {
     loading.value = false;
   }
@@ -37,9 +42,7 @@ const avancar = async () => {
 
 <template>
   <div class="step-view">
-    <h2 class="md-title">Endereço</h2>
-    <p class="md-subtitle">Onde podemos te encontrar?</p>
-    
+    <h2 class="md-title" style="margin-bottom: 20px;">Endereço</h2> 
     <form @submit.prevent="avancar">
       <div class="md-grid">
         <div class="md-field">
@@ -65,7 +68,7 @@ const avancar = async () => {
 
       <div class="md-field">
         <label>Estado (UF)</label>
-        <input v-model="form.estado" type="text" maxlength="2" required placeholder="SP">
+        <input v-model="form.estado" type="text" maxlength="2" required placeholder="PR">
       </div>
 
       <div class="md-actions">
@@ -73,5 +76,11 @@ const avancar = async () => {
         <button type="submit" class="md-button primary" :disabled="loading">Próximo</button>
       </div>
     </form>
+
+    <MensagemAlert 
+      v-model="showError" 
+      :message="errorMessage" 
+      type="error" 
+    />
   </div>
 </template>
