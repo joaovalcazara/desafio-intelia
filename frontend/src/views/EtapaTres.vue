@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref } from 'vue';
+    import { reactive, ref, watch } from 'vue';
     import { vMaska } from "maska/vue";
     import axios from 'axios';
     import MensagemAlert from '../components/MensagemAlert.vue';
@@ -14,11 +14,18 @@
     const alertMessage = ref('');
     const alertType = ref('error');
 
-    const form = reactive(props.dadosIniciais || {
+    const form = reactive({
         telefoneFixo: '', 
         telefoneCelular: '',  
         etapaAtual: 3
     });
+
+    watch(() => props.dadosIniciais, (novosDados) => {
+      if (novosDados) {
+        Object.assign(form, novosDados);
+      }
+    }, { immediate: true, deep: true });
+
 
     const finalizar = async () => {
         loading.value = true;

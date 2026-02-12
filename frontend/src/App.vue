@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import EtapaUm from './views/EtapaUm.vue';
 import EtapaDois from './views/EtapaDois.vue';
@@ -11,18 +11,23 @@ const uuid = ref(localStorage.getItem('cadastro_uuid'));
 const dadosIniciais = ref(null);
 const views = [EtapaUm, EtapaDois, EtapaTres];
 
-onMounted(async () => {
+const carregarDados = async () => {
   if (uuid.value) {
     try {
       const { data } = await axios.get(`/cadastro/${uuid.value}`);
-      dadosIniciais.value = data.data; 
+      dadosIniciais.value = { ...data.data }; 
       etapa.value = data.data.etapaAtual; 
     } catch (e) {
       console.error("Cadastro não encontrado, iniciando do zero.");
       localStorage.removeItem('cadastro_uuid');
     }
   }
+};
+
+onMounted(() => {
+  carregarDados();
 });
+
 const proximo = (novoUuid) => {
   if (novoUuid) {
     uuid.value = novoUuid;
@@ -30,12 +35,16 @@ const proximo = (novoUuid) => {
   }
   etapa.value++;
 };
+
+const voltar = async () => {
+  etapa.value--;
+  await carregarDados();
+};
 </script>
 
 
 <template>
-  <HeaderApp :etapa="etapa" />
-
+  <HeaderApp :etapa="etapa" /> 
   <main class="main-container">
     <div class="form-card">
       <transition name="fade" mode="out-in">
@@ -44,11 +53,12 @@ const proximo = (novoUuid) => {
           :uuid="uuid"
           :dados-iniciais="dadosIniciais"
           @avancar="proximo" 
-          @voltar="etapa--"
+          @voltar="voltar"
         />
       </transition>
     </div>
   </main>
 </template>
+ 
 
  

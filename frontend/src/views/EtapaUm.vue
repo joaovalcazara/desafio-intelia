@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watchEffect } from 'vue';
+import { reactive, ref, watch} from 'vue';
 import axios from 'axios';
 import '../styles/form-etapas.css';
 
@@ -7,22 +7,19 @@ const emit = defineEmits(['avancar']);
 const loading = ref(false);
 const props = defineProps(['uuid', 'dadosIniciais']);
 
-const form = reactive(props.dadosIniciais || {
+const form = reactive({
   nomeCompleto: '',
   dataNascimento: '',
   email: '',
   etapaAtual: 1
 });
 
-// watchEffect garante que se o App.vue demorar para buscar os dados na API,
-// o formulário seja atualizado assim que a prop 'dadosIniciais' mudar.
-watchEffect(() => {
-  if (props.dadosIniciais) {
-    form.nomeCompleto = props.dadosIniciais.nomeCompleto || '';
-    form.dataNascimento = props.dadosIniciais.dataNascimento || '';
-    form.email = props.dadosIniciais.email || '';
-  }
-});
+ 
+watch(() => props.dadosIniciais, (novosDados) => {
+    if (novosDados) {
+      Object.assign(form, novosDados);
+    }
+  }, { immediate: true });
 
 const avancar = async () => {
   loading.value = true;
@@ -70,7 +67,7 @@ const avancar = async () => {
         <input v-model="form.email" type="email" required placeholder="seu@email.com">
       </div>
 
-      <div class="actions">
+      <div class="actions actions-etapa-um">
         <button type="submit" class="md-button primary" :disabled="loading">
           {{ loading ? 'Enviando...' : 'Próximo' }}
         </button>
