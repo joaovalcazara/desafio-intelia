@@ -18,7 +18,6 @@ const carregarDados = async () => {
       dadosIniciais.value = { ...data.data }; 
       etapa.value = data.data.etapaAtual; 
     } catch (e) {
-      console.error("Cadastro não encontrado, iniciando do zero.");
       localStorage.removeItem('cadastro_uuid');
     }
   }
