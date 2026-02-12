@@ -111,6 +111,21 @@ form {
     color: #666;
 }
 
+.md-button.success {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.md-button.success:hover {
+    background-color: #1b5e20;
+}
+
+.md-button.success:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #666;
+}
+
 .md-button.text {
     background-color: transparent;
     color: #00172c;

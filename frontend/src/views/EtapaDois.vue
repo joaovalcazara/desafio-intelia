@@ -27,6 +27,12 @@ watch(() => props.dadosIniciais, (novosDados) => {
 }, { immediate: true, deep: true });
 
 const avancar = async () => {
+  const cepRegex = /^\d{5}-\d{3}$/;
+  if (!cepRegex.test(form.cep)) {
+    errorMessage.value = "CEP inválido! Use o formato: 00000-000";
+    showError.value = true;
+    return;
+  }
   loading.value = true;
   try {
     const payload = {
