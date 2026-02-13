@@ -12,12 +12,14 @@ const uuid = ref(localStorage.getItem('cadastro_uuid'));
 const dadosIniciais = ref(null);
 const views = [EtapaUm, EtapaDois, EtapaTres];
 
-const carregarDados = async () => {
+const carregarDados = async (setEtapa = true) => {
   if (uuid.value) {
     try {
       const { data } = await axios.get(`/cadastro/${uuid.value}`);
-      dadosIniciais.value = { ...data.data }; 
-      etapa.value = data.data.etapaAtual; 
+      dadosIniciais.value = { ...data.data };
+      if (setEtapa && data?.data?.etapaAtual) {
+        etapa.value = data.data.etapaAtual;
+      }
     } catch (e) {
       localStorage.removeItem('cadastro_uuid');
     }
@@ -37,8 +39,8 @@ const proximo = (novoUuid) => {
 };
 
 const voltar = async () => {
-  etapa.value--;
-  await carregarDados();
+  etapa.value = Math.max(1, etapa.value - 1);
+  await carregarDados(false);
 };
 </script>
 
