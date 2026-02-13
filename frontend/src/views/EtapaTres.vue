@@ -6,14 +6,11 @@
 
     
     const props = defineProps(['uuid', 'dadosIniciais']);
-    const emit = defineEmits(['voltar', 'sucesso']);
-
-    const loading = ref(false); 
-
+    const emit = defineEmits(['voltar', 'sucesso']); 
+    const loading = ref(false);  
     const showAlert = ref(false);
     const alertMessage = ref('');
-    const alertType = ref('error');
-
+    const alertType = ref('error'); 
     const form = reactive({
         telefoneFixo: '', 
         telefoneCelular: '',  
@@ -90,9 +87,7 @@
           required
           placeholder="(00) 00000-0000"
         />
-      </div>
-
-
+      </div>  
       <div class="md-field">
         <v-text-field
           v-model="form.telefoneFixo"
@@ -100,8 +95,7 @@
           label="Telefone Fixo"
           placeholder="(00) 0000-0000"
         />
-      </div> 
-
+      </div>  
       <div class="md-actions">
         <v-btn type="button" @click="$emit('voltar')" class="md-button text" :disabled="loading">
           Voltar

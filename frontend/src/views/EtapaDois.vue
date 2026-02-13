@@ -8,9 +8,7 @@ const props = defineProps(['uuid', 'dadosIniciais']);
 const emit = defineEmits(['avancar', 'voltar']);
 const loading = ref(false); 
 const showError = ref(false);
-const errorMessage = ref('');
-
-
+const errorMessage = ref(''); 
 const form = reactive({
     cep: '', 
     rua: '', 

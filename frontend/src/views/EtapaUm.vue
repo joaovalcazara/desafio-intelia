@@ -15,8 +15,6 @@ const form = reactive({
   etapaAtual: 1
 });
 
-// display formatting will be done inline in the template using toLocaleDateString
-
  
 watch(() => props.dadosIniciais, (novosDados) => {
     if (novosDados) {
@@ -44,16 +42,13 @@ const avancar = async () => {
     loading.value = false;
   }
 };
-</script>
-
- 
+</script>  
 
 <template>
   <div class="step-view">
     <div class="form-header">
       <h2 class="md-title" style="margin-bottom: 20px;">Identificação</h2>
-    </div>
-    
+    </div> 
     <form @submit.prevent="avancar" class="md-form">
       <div class="md-field">
         <v-text-field
@@ -62,8 +57,7 @@ const avancar = async () => {
           required
           placeholder="Digite seu nome"
         />
-      </div>
-      
+      </div> 
       <div class="md-field">
         <v-menu v-model="dateMenu" location="bottom start" :close-on-content-click="false">
           <template #activator="{ props }">
@@ -77,8 +71,7 @@ const avancar = async () => {
           </template>
           <v-date-picker v-model="form.dataNascimento" @update:model-value="() => (dateMenu = false)" />
         </v-menu>
-      </div>
-
+      </div> 
       <div class="md-field">
         <v-text-field
           v-model="form.email"
@@ -87,8 +80,7 @@ const avancar = async () => {
           required
           placeholder="seu@email.com"
         />
-      </div>
-
+      </div> 
       <div class="actions actions-etapa-um">
         <v-btn type="submit" class="md-button primary" :disabled="loading">
           {{ loading ? 'Enviando...' : 'Próximo' }}
