@@ -27,13 +27,17 @@
 
 
 <template>
-  <Transition name="toast">
-    <div v-if="modelValue" class="toast-container" :class="type">
-      <div class="toast-content">
-        <span class="message">{{ message }}</span>
-      </div>
-      <button class="close-btn" @click="close">&times;</button>
-    </div>
-  </Transition>
+  <v-snackbar
+    :model-value="modelValue"
+    @update:model-value="val => emit('update:modelValue', val)"
+    :timeout="duration"
+    :color="type === 'success' ? 'green' : 'red'"
+    location="top"
+  >
+    {{ message }}
+    <template #actions>
+      <v-btn text @click="close">Fechar</v-btn>
+    </template>
+  </v-snackbar>
 </template>
 

@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^1.13.5",
     "maska": "^3.2.0",
-    "vue": "^3.5.25"
+    "vue": "^3.5.25",
+    "vuetify": "^3.4.0",
+    "sass": "^1.66.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.2",

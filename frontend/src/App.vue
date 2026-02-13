@@ -43,20 +43,22 @@ const voltar = async () => {
 
 
 <template>
-  <HeaderApp :etapa="etapa" /> 
-  <main class="main-container">
-    <div class="form-card">
-      <transition name="fade" mode="out-in">
-        <component 
-          :is="views[etapa - 1]" 
-          :uuid="uuid"
-          :dados-iniciais="dadosIniciais"
-          @avancar="proximo" 
-          @voltar="voltar"
-        />
-      </transition>
-    </div>
-  </main>
+  <v-app>
+    <HeaderApp :etapa="etapa" /> 
+    <main class="main-container">
+      <div class="form-card">
+        <transition name="fade" mode="out-in">
+          <component 
+            :is="views[etapa - 1]" 
+            :uuid="uuid"
+            :dados-iniciais="dadosIniciais"
+            @avancar="proximo" 
+            @voltar="voltar"
+          />
+        </transition>
+      </div>
+    </main>
+  </v-app>
 </template>
  
 
