@@ -58,29 +58,24 @@ const avancar = async () => {
     <form @submit.prevent="avancar">
       <div class="md-grid">
         <div class="md-field">
-          <label>CEP</label>
-          <input v-model="form.cep" v-maska="'#####-###'" required placeholder="00000-000">
+          <v-text-field v-model="form.cep" v-maska="'#####-###'" label="CEP" required placeholder="00000-000" />
         </div>
         <div class="md-field">
-          <label>Rua</label>
-          <input v-model="form.rua" type="text" required placeholder="Ex: Av. Paulista">
+          <v-text-field v-model="form.rua" label="Rua" required placeholder="Ex: Av. Paulista" />
         </div>
       </div>
 
       <div class="md-grid">
         <div class="md-field">
-          <label>Número</label>
-          <input v-model="form.numero" type="text" required>
+          <v-text-field v-model="form.numero" label="Número" required />
         </div>
         <div class="md-field">
-          <label>Cidade</label>
-          <input v-model="form.cidade" type="text" required>
+          <v-text-field v-model="form.cidade" label="Cidade" required />
         </div>
       </div>
 
       <div class="md-field">
-        <label>Estado (UF)</label>
-        <input v-model="form.estado" type="text" maxlength="2" required placeholder="PR">
+        <v-text-field v-model="form.estado" label="Estado (UF)" maxlength="2" required placeholder="PR" />
       </div>
 
       <div class="md-actions">

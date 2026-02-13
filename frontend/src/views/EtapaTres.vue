@@ -83,23 +83,23 @@
     <form @submit.prevent="finalizar">
 
       <div class="md-field">
-        <label>Telefone Celular</label>
-        <input 
-          v-model="form.telefoneCelular" 
-          v-maska="'(##) #####-####'" 
-          required 
+        <v-text-field
+          v-model="form.telefoneCelular"
+          v-maska="'(##) #####-####'"
+          label="Telefone Celular"
+          required
           placeholder="(00) 00000-0000"
-        >
+        />
       </div>
 
 
       <div class="md-field">
-        <label>Telefone Fixo</label>
-        <input 
-          v-model="form.telefoneFixo" 
-          v-maska="'(##) ####-####'"  
+        <v-text-field
+          v-model="form.telefoneFixo"
+          v-maska="'(##) ####-####'"
+          label="Telefone Fixo"
           placeholder="(00) 0000-0000"
-        >
+        />
       </div> 
 
       <div class="md-actions">

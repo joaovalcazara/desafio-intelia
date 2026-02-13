@@ -1,10 +1,11 @@
 <script setup>
-import { reactive, ref, watch} from 'vue';
+import { reactive, ref, watch } from 'vue';
 import axios from 'axios';
 import '../styles/form-etapas.css';
 
 const emit = defineEmits(['avancar']);
 const loading = ref(false);
+const dateMenu = ref(false);
 const props = defineProps(['uuid', 'dadosIniciais']);
 
 const form = reactive({
@@ -13,6 +14,8 @@ const form = reactive({
   email: '',
   etapaAtual: 1
 });
+
+// display formatting will be done inline in the template using toLocaleDateString
 
  
 watch(() => props.dadosIniciais, (novosDados) => {
@@ -53,18 +56,37 @@ const avancar = async () => {
     
     <form @submit.prevent="avancar" class="md-form">
       <div class="md-field">
-        <label>Nome Completo</label>
-        <input v-model="form.nomeCompleto" type="text" required placeholder="Digite seu nome">
+        <v-text-field
+          v-model="form.nomeCompleto"
+          label="Nome Completo"
+          required
+          placeholder="Digite seu nome"
+        />
       </div>
       
       <div class="md-field">
-        <label>Data de Nascimento</label>
-        <input v-model="form.dataNascimento" type="date" required>
+        <v-menu v-model="dateMenu" location="bottom start" :close-on-content-click="false">
+          <template #activator="{ props }">
+            <v-text-field
+              v-bind="props"
+              :model-value="form.dataNascimento ? new Date(form.dataNascimento).toLocaleDateString('pt-BR') : ''"
+              label="Data de Nascimento"
+              readonly
+              required
+            />
+          </template>
+          <v-date-picker v-model="form.dataNascimento" @update:model-value="() => (dateMenu = false)" />
+        </v-menu>
       </div>
 
       <div class="md-field">
-        <label>E-mail</label>
-        <input v-model="form.email" type="email" required placeholder="seu@email.com">
+        <v-text-field
+          v-model="form.email"
+          label="E-mail"
+          type="email"
+          required
+          placeholder="seu@email.com"
+        />
       </div>
 
       <div class="actions actions-etapa-um">
