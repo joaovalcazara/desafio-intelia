@@ -1,3 +1,7 @@
+<script setup>
+    import '../styles/footer-app.css'
+</script>
+
 <template>
   <v-footer padless height="96" class="footer-root">
     <v-sheet class="footer-sheet" width="100%" elevation="0">
@@ -19,23 +23,3 @@
   </v-footer>
 </template>
 
-<script setup>
-// No props required; static footer
-</script>
-
-<style scoped>
-.footer-root {
-  background-color: #00172c;
-  color: #ffffff;
-}
-.footer-sheet {
-  background-color: transparent;
-}
-.footer-logo {
-  margin-bottom: 6px;
-}
-.footer-copy {
-  color: #e0e0e0;
-  font-size: 0.95rem;
-}
-</style>

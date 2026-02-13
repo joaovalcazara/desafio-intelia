@@ -3,10 +3,10 @@
     import '../styles/mensagemAlert.css';
 
     const props = defineProps({
-    modelValue: Boolean,
-    message: String,
-    type: { type: String, default: 'error' }, // 'error', 'success', 'info'
-    duration: { type: Number, default: 4000 }
+        modelValue: Boolean,
+        message: String,
+        type: { type: String, default: 'error' },  
+        duration: { type: Number, default: 4000 }
     });
 
     const emit = defineEmits(['update:modelValue']);
@@ -17,7 +17,6 @@
 
     const close = () => emit('update:modelValue', false);
 
-    // Fecha automaticamente após X segundos
     watch(() => props.modelValue, (newVal) => {
     if (newVal) {
         setTimeout(close, props.duration);

@@ -1,0 +1,17 @@
+.v-footer.footer-root,
+.footer-root {
+  background-color: #00172c !important;
+  color: #ffffff;
+}
+
+.footer-sheet,
+.footer-root .v-sheet {
+  background-color: transparent !important;
+}
+.footer-logo {
+  margin-bottom: 6px;
+}
+.footer-copy {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
