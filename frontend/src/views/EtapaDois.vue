@@ -20,11 +20,39 @@ const form = reactive({
     etapaAtual: 2
 });
 
+const buscarCep = async () => {
+  const digits = String(form.cep || '').replace(/\D/g, '');
+  if (digits.length !== 8) return;  
+  try {
+    loading.value = true;
+    const res = await axios.get(`https://viacep.com.br/ws/${digits}/json/`);
+    const data = res.data;
+    if (data && !data.erro) {
+      form.rua = data.logradouro || form.rua;
+      form.cidade = data.localidade || form.cidade;
+      form.estado = (data.uf || form.estado).toUpperCase().slice(0, 2);
+    } else {
+      errorMessage.value = 'CEP não encontrado.';
+      showError.value = true;
+    }
+  } catch (e) {
+    errorMessage.value = 'Erro ao buscar CEP.';
+    showError.value = true;
+  } finally {
+    loading.value = false;
+  }
+};
+
 watch(() => props.dadosIniciais, (novosDados) => {
   if (novosDados) {
     Object.assign(form, novosDados);
   }
 }, { immediate: true, deep: true });
+
+watch(() => form.cep, (novo) => {
+  const cepCompleto = /^\d{5}-\d{3}$/.test(novo);
+  if (cepCompleto) buscarCep();
+});
 
 const avancar = async () => {
   const cepRegex = /^\d{5}-\d{3}$/;
@@ -67,7 +95,7 @@ const avancar = async () => {
 
       <div class="md-grid">
         <div class="md-field">
-          <v-text-field v-model="form.numero" label="Número" required />
+          <v-text-field v-model="form.numero" type="number" label="Número" required />
         </div>
         <div class="md-field">
           <v-text-field v-model="form.cidade" label="Cidade" required />
@@ -75,7 +103,7 @@ const avancar = async () => {
       </div>
 
       <div class="md-field">
-        <v-text-field v-model="form.estado" label="Estado (UF)" maxlength="2" required placeholder="PR" />
+        <v-text-field v-model="form.estado" type="text" maxlength="2" label="Estado (UF)" required placeholder="PR" />
       </div>
 
       <div class="md-actions">
