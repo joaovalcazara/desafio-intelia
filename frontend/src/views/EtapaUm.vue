@@ -68,9 +68,9 @@ const avancar = async () => {
       </div>
 
       <div class="actions actions-etapa-um">
-        <button type="submit" class="md-button primary" :disabled="loading">
+        <v-btn type="submit" class="md-button primary" :disabled="loading">
           {{ loading ? 'Enviando...' : 'Próximo' }}
-        </button>
+        </v-btn>
       </div>
     </form>
   </div>

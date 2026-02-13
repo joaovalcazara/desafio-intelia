@@ -93,6 +93,8 @@ form {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    min-width: 200px !important;
+    min-height: 48px !important;
 }
 
 .md-button.primary {
@@ -104,12 +106,7 @@ form {
     background-color: #00d2ff;
     color: #00172c;
 }
-
-.md-button.primary:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    color: #666;
-}
+ 
 
 .md-button.success {
     background-color: #2e7d32;
@@ -120,11 +117,7 @@ form {
     background-color: #1b5e20;
 }
 
-.md-button.success:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    color: #666;
-}
+ 
 
 .md-button.text {
     background-color: transparent;
@@ -133,7 +126,7 @@ form {
 }
 
 .md-button.text:hover {
-    background-color: #f0f0f0;
+    background-color: #b1abab;
 }
 
  
@@ -147,14 +140,11 @@ form {
     justify-content: center !important;
     margin-top: 40px !important;
     width: 100% !important;
-    gap: 12px !important;
-}
+ }
 
 .actions-etapa-um .md-button {
     flex: 0 1 auto !important;
-    padding: 16px 48px !important;
-    font-size: 1rem !important;
-    min-width: 200px !important;
+ 
 }
 
 @media (max-width: 600px) {

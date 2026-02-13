@@ -5,6 +5,7 @@ import EtapaUm from './views/EtapaUm.vue';
 import EtapaDois from './views/EtapaDois.vue';
 import EtapaTres from './views/EtapaTres.vue';
 import HeaderApp from './components/HeaderApp.vue';
+import FooterApp from './components/FooterApp.vue';
 import './styles/app.css';
 const etapa = ref(1);
 const uuid = ref(localStorage.getItem('cadastro_uuid'));
@@ -58,6 +59,7 @@ const voltar = async () => {
         </transition>
       </div>
     </main>
+    <FooterApp />
   </v-app>
 </template>
  

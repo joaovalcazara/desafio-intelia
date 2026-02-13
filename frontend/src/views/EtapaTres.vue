@@ -103,12 +103,12 @@
       </div> 
 
       <div class="md-actions">
-        <button type="button" @click="$emit('voltar')" class="md-button text" :disabled="loading">
+        <v-btn type="button" @click="$emit('voltar')" class="md-button text" :disabled="loading">
           Voltar
-        </button>
-        <button type="submit" class="md-button success" :disabled="loading">
+        </v-btn>
+        <v-btn type="submit" class="md-button success" :disabled="loading">
           {{ loading ? 'Enviando...' : 'Concluir Cadastro' }}
-        </button>
+        </v-btn>
       </div>
     </form> 
     <MensagemAlert 

@@ -84,8 +84,8 @@ const avancar = async () => {
       </div>
 
       <div class="md-actions">
-        <button type="button" @click="$emit('voltar')" class="md-button text">Voltar</button>
-        <button type="submit" class="md-button primary" :disabled="loading">Próximo</button>
+        <v-btn type="button" @click="$emit('voltar')" class="md-button text">Voltar</v-btn>
+        <v-btn type="submit" class="md-button primary" :disabled="loading">Próximo</v-btn>
       </div>
     </form>
 
