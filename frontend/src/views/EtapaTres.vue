@@ -43,15 +43,23 @@
 
         loading.value = true;
         try {
-            const payload = {
-                uuid: props.uuid,
-                ...form,
-                etapaAtual: 3
-            };
+          const payload = {
+            uuid: props.uuid,
+            ...form,
+            etapaAtual: 3
+          };
 
-            const { data } = await axios.post('/cadastro', payload);
-            
-            if (data.status === 'sucesso' || data.uuid) { 
+          if (!props.uuid) {
+            alertType.value = 'error';
+            alertMessage.value = 'Cadastro não iniciado. Volte para a etapa 1.';
+            showAlert.value = true;
+            loading.value = false;
+            return;
+          }
+
+          const { data } = await axios.put(`/cadastro/${props.uuid}`, payload);
+
+          if (data.status === 'sucesso' || data.uuid) { 
                 alertType.value = 'success';
                 alertMessage.value = "Cadastro finalizado com sucesso! Obrigado pela preferência.";
                 showAlert.value = true; 

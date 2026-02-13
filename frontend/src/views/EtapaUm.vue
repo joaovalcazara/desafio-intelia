@@ -30,14 +30,18 @@ const avancar = async () => {
       ...form,
       etapaAtual: 1
     };
-    
-    const { data } = await axios.post('/cadastro', payload);
-    emit('avancar', data.data.uuid); 
-  } catch (e) {
-    if (e.response?.status === 404) {
-        localStorage.removeItem('cadastro_uuid');
-        uuid.value = null;
+    const Uuid = typeof props.uuid === 'string' && props.uuid.trim() !== '';
+
+    let response;
+    if (Uuid) {
+      response = await axios.put(`/cadastro/${props.uuid}`, payload);
+    } else {
+      response = await axios.post('/cadastro', payload);
     }
+
+    emit('avancar', response.data.data.uuid);
+  } catch (e) {
+    localStorage.removeItem('cadastro_uuid');
   } finally {
     loading.value = false;
   }

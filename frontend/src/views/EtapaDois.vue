@@ -60,13 +60,20 @@ const avancar = async () => {
     return;
   }
   loading.value = true;
-  try {
+    try {
     const payload = {
-      uuid: props.uuid,  
+      uuid: props.uuid,
       ...form,
       etapaAtual: 2
     };
-    await axios.post('/cadastro', payload);
+
+    if (!props.uuid) {
+      errorMessage.value = 'Cadastro não iniciado. Volte para a etapa 1.';
+      showError.value = true;
+      return;
+    }
+
+    await axios.put(`/cadastro/${props.uuid}`, payload);
     emit('avancar');
   } catch (e) {
     errorMessage.value = e.response?.data?.message || "Erro ao avançar para a próxima etapa.";
