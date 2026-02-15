@@ -108,8 +108,21 @@ class CadastroService
     public function processarCadastro(CadastroDto $dto): Cadastro
     {
         $erros = $this->validarPorEtapa($dto);
-        if (!empty($erros)) {
-            throw new \InvalidArgumentException('Dados inválidos para a etapa atual');
+
+        if (count($erros) > 0) {
+
+            $retorno = [];
+
+            foreach ($erros as $erro) {
+                $retorno[] = [
+                    'campo' => $erro->getPropertyPath(),
+                    'mensagem' => $erro->getMessage(),
+                ];
+            }
+
+            throw new \InvalidArgumentException(
+                json_encode($retorno, JSON_UNESCAPED_UNICODE)
+            );
         }
 
         $cadastro = $this->obterOuCriarCadastro($dto->uuid);
@@ -122,7 +135,8 @@ class CadastroService
     }
 
 
-    public function buscarCadastroFormatado(string $uuid): ?array
+
+    public function buscarCadastro(string $uuid): ?array
     {
         $cadastro = $this->cadastroRepository->findOneBy(['uuid' => $uuid]);
 

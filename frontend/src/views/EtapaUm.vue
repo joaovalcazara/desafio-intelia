@@ -7,6 +7,7 @@ const emit = defineEmits(['avancar']);
 const loading = ref(false);
 const dateMenu = ref(false);
 const props = defineProps(['uuid', 'dadosIniciais']);
+const diaAtual = new Date().toISOString().split('T')[0]
 
 const form = reactive({
   nomeCompleto: '',
@@ -68,12 +69,12 @@ const avancar = async () => {
             <v-text-field
               v-bind="props"
               :model-value="form.dataNascimento ? new Date(form.dataNascimento).toLocaleDateString('pt-BR') : ''"
-              label="Data de Nascimento"
+              label="Data de Nascimento" 
               readonly
               required
             />
           </template>
-          <v-date-picker v-model="form.dataNascimento" @update:model-value="() => (dateMenu = false)" />
+          <v-date-picker v-model="form.dataNascimento"  :max="diaAtual" @update:model-value="() => (dateMenu = false)" />
         </v-menu>
       </div> 
       <div class="md-field">

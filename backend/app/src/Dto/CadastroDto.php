@@ -9,7 +9,7 @@ class CadastroDto
     public ?string $nomeCompleto = null;
 
     #[Assert\NotBlank(groups: ['etapa1'])]
-    #[Assert\Email(groups: ['etapa1'])]
+    #[Assert\Email(message: 'E-mail inválido', groups: ['etapa1'])]
     public ?string $email = null;
 
     #[Assert\NotBlank(groups: ['etapa1'])]

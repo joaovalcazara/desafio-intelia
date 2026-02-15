@@ -36,7 +36,7 @@ final class CadastroController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'erro',
-                'message' => $e->getMessage()
+                'message' => json_decode($e->getMessage(), true)
             ], JsonResponse::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return $this->json([
@@ -51,7 +51,7 @@ final class CadastroController extends AbstractController
     public function buscar(string $uuid): JsonResponse
     {
         try {
-            $dados = $this->cadastroService->buscarCadastroFormatado($uuid);
+            $dados = $this->cadastroService->buscarCadastro($uuid);
 
             if (!$dados) {
                 return $this->json([
@@ -81,7 +81,6 @@ final class CadastroController extends AbstractController
         try {
             $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json');
 
-            // prefer uuid from payload, fallback to route
             $dto->uuid = $dto->uuid ?? $uuid;
 
             if (empty($dto->uuid)) {
