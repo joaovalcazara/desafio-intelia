@@ -9,12 +9,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CadastroController extends AbstractController
 {
     public function __construct(
         private readonly CadastroService $cadastroService,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly ValidatorInterface $validator
     ) {}
 
     #[Route('/api/cadastro', name: 'cadastro_salvar', methods: ['POST'])]
@@ -22,6 +24,11 @@ final class CadastroController extends AbstractController
     {
         try {
             $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json');
+
+            $errors = $this->validator->validate($dto);
+            if (count($errors) > 0) {
+                return $this->json(['status'=>'erro','message'=> (string) $errors], 400);
+            }
 
             $cadastro = $this->cadastroService->processarCadastro($dto);
 
@@ -80,6 +87,12 @@ final class CadastroController extends AbstractController
     {
         try {
             $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json');
+
+            $errors = $this->validator->validate($dto);
+            if (count($errors) > 0) {
+                return $this->json(['status'=>'erro','message'=> (string) $errors], 400);
+            }
+
 
             $dto->uuid = $dto->uuid ?? $uuid;
 
