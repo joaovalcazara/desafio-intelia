@@ -3,6 +3,8 @@ import { reactive, ref, watch } from 'vue';
 import { vMaska } from "maska/vue";
 import axios from 'axios';
 import MensagemAlert from '../components/MensagemAlert.vue';
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps(['uuid', 'dadosIniciais']);
 const emit = defineEmits(['avancar', 'voltar']);
@@ -30,11 +32,11 @@ const buscarCep = async () => {
       form.cidade = data.localidade || form.cidade;
       form.estado = (data.uf || form.estado).toUpperCase().slice(0, 2);
     } else {
-      errorMessage.value = 'CEP não encontrado.';
+      errorMessage.value = t('cep_not_found');
       showError.value = true;
     }
   } catch (e) {
-    errorMessage.value = 'Erro ao buscar CEP.';
+    errorMessage.value = t('cep_error');
     showError.value = true;
   } finally {
     loading.value = false;
@@ -55,7 +57,7 @@ watch(() => form.cep, (novo) => {
 const avancar = async () => {
   const cepRegex = /^\d{5}-\d{3}$/;
   if (!cepRegex.test(form.cep)) {
-    errorMessage.value = "CEP inválido! Use o formato: 00000-000";
+    errorMessage.value = t('cep_invalid');
     showError.value = true;
     return;
   }
@@ -68,7 +70,7 @@ const avancar = async () => {
     };
 
     if (!props.uuid) {
-      errorMessage.value = 'Cadastro não iniciado. Volte para a etapa 1.';
+      errorMessage.value = t('cadastro_nao_iniciado');
       showError.value = true;
       return;
     }
@@ -87,33 +89,33 @@ const avancar = async () => {
 
 <template>
   <div class="step-view">
-    <h2 class="md-title" style="margin-bottom: 20px;">Endereço</h2> 
-    <form @submit.prevent="avancar">
+    <h2 class="md-title" style="margin-bottom: 20px;">{{ t('endereco') }}</h2> 
+    <form @submit.prevent="avancar" >
       <div class="md-grid">
         <div class="md-field">
-          <v-text-field v-model="form.cep" v-maska="'#####-###'" label="CEP" required placeholder="00000-000" />
+          <v-text-field v-model="form.cep" v-maska="'#####-###'" :label="t('cep_label')" required :placeholder="t('cep_placeholder')" />
         </div>
         <div class="md-field">
-          <v-text-field v-model="form.rua" label="Rua" required placeholder="Ex: Av. Paulista" />
+          <v-text-field v-model="form.rua" :label="t('rua_label')" required :placeholder="t('rua_placeholder')" />
         </div>
       </div>
 
       <div class="md-grid">
         <div class="md-field">
-          <v-text-field v-model="form.numero" type="number" label="Número" required />
+          <v-text-field v-model="form.numero" type="number" :label="t('numero_label')" required />
         </div>
         <div class="md-field">
-          <v-text-field v-model="form.cidade" label="Cidade" required />
+          <v-text-field v-model="form.cidade" :label="t('cidade_label')" required />
         </div>
       </div>
 
       <div class="md-field">
-        <v-text-field v-model="form.estado" type="text" maxlength="2" label="Estado (UF)" required placeholder="PR" />
+        <v-text-field v-model="form.estado" type="text" maxlength="2" :label="t('estado_label')" required placeholder="PR" />
       </div>
 
       <div class="md-actions">
-        <v-btn type="button" @click="$emit('voltar')" class="md-button text">Voltar</v-btn>
-        <v-btn type="submit" class="md-button primary" :disabled="loading">Próximo</v-btn>
+        <v-btn type="button" @click="$emit('voltar')" class="md-button text">{{ t('voltar') }}</v-btn>
+        <v-btn type="submit" class="md-button primary" :disabled="loading">{{ t('proximo') }}</v-btn>
       </div>
     </form>
 

@@ -1,5 +1,8 @@
 <script setup>
     import '../styles/footer-app.css'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
+    const year = new Date().getFullYear()
 </script>
 
 <template>
@@ -15,7 +18,7 @@
               contain
               height="32"
             />
-            <div class="footer-copy">© 2024 Todos os direitos reservados</div>
+            <div class="footer-copy">{{ t('direitos_reservados', { year }) }}</div>
           </v-col>
         </v-row>
       </v-container>

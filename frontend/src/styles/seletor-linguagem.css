@@ -1,0 +1,14 @@
+.language-selector select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #00d2ff;
+  color: #002033;
+  font-weight: 600;
+  min-width: 110px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.language-selector select:focus {
+  outline: 2px solid rgba(0,210,255,0.25);
+}

@@ -1,14 +1,30 @@
 <script setup>
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, watch, computed } from 'vue';
 import axios from 'axios';
 import '../styles/form-etapas.css';
+import { useI18n } from 'vue-i18n'
+    
 
 const emit = defineEmits(['avancar']);
 const loading = ref(false);
 const dateMenu = ref(false);
 const props = defineProps(['uuid', 'dadosIniciais']);
 const diaAtual = new Date().toISOString().split('T')[0]
+const { t, locale } = useI18n()
 
+const dateLocale = computed(() => {
+  if (!locale || !locale.value) return 'pt-BR'
+  switch (locale.value) {
+    case 'pt': return 'pt-BR'
+    case 'es': return 'es-ES'
+    case 'en': return 'en-US'
+    default: return locale.value
+  }
+})
+
+const formattedDate = computed(() => {
+  return form.dataNascimento ? new Date(form.dataNascimento).toLocaleDateString(dateLocale.value) : ''
+})
 const form = reactive({
   nomeCompleto: '',
   dataNascimento: '',
@@ -52,15 +68,15 @@ const avancar = async () => {
 <template>
   <div class="step-view">
     <div class="form-header">
-      <h2 class="md-title" style="margin-bottom: 20px;">Identificação</h2>
+      <h2 class="md-title" style="margin-bottom: 20px;">{{ t('identificacao') }}</h2>
     </div> 
     <form @submit.prevent="avancar" class="md-form">
       <div class="md-field">
         <v-text-field
           v-model="form.nomeCompleto"
-          label="Nome Completo"
+          :label="t('nome_completo')"
           required
-          placeholder="Digite seu nome"
+          :placeholder="t('digite_seu_nome')"
         />
       </div> 
       <div class="md-field">
@@ -68,13 +84,14 @@ const avancar = async () => {
           <template #activator="{ props }">
             <v-text-field
               v-bind="props"
-              :model-value="form.dataNascimento ? new Date(form.dataNascimento).toLocaleDateString('pt-BR') : ''"
-              label="Data de Nascimento" 
+              :model-value="formattedDate"
+              :label="t('data_nascimento')"
+              :placeholder="t('digite_data')"
               readonly
               required
             />
           </template>
-          <v-date-picker v-model="form.dataNascimento"  :max="diaAtual" @update:model-value="() => (dateMenu = false)" />
+          <v-date-picker v-model="form.dataNascimento" :locale="dateLocale" :max="diaAtual" @update:model-value="() => (dateMenu = false)" />
         </v-menu>
       </div> 
       <div class="md-field">
@@ -88,7 +105,7 @@ const avancar = async () => {
       </div> 
       <div class="actions actions-etapa-um">
         <v-btn type="submit" class="md-button primary" :disabled="loading">
-          {{ loading ? 'Enviando...' : 'Próximo' }}
+          {{ loading ?  t('enviando') : t('proximo') }}
         </v-btn>
       </div>
     </form>

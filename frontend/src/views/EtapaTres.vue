@@ -3,6 +3,7 @@
     import { vMaska } from "maska/vue";
     import axios from 'axios';
     import MensagemAlert from '../components/MensagemAlert.vue';
+    import { useI18n } from 'vue-i18n'
 
     
     const props = defineProps(['uuid', 'dadosIniciais']);
@@ -11,6 +12,7 @@
     const showAlert = ref(false);
     const alertMessage = ref('');
     const alertType = ref('error'); 
+    const { t } = useI18n()
     const form = reactive({
         telefoneFixo: '', 
         telefoneCelular: '',  
@@ -27,17 +29,17 @@
     const finalizar = async () => {
         const celularRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
         if (!celularRegex.test(form.telefoneCelular)) {
-            alertType.value = 'error';
-            alertMessage.value = "Telefone celular inválido! Use o formato: (00) 00000-0000";
-            showAlert.value = true;
+          alertType.value = 'error';
+          alertMessage.value = t('telefone_celular_invalid');
+          showAlert.value = true;
             return;
         }
 
         const fixoRegex = /^\(\d{2}\) \d{4}-\d{4}$/;
         if (form.telefoneFixo && !fixoRegex.test(form.telefoneFixo)) {
-            alertType.value = 'error';
-            alertMessage.value = "Telefone fixo inválido! Use o formato: (00) 0000-0000";
-            showAlert.value = true;
+          alertType.value = 'error';
+          alertMessage.value = t('telefone_fixo_invalid');
+          showAlert.value = true;
             return;
         }
 
@@ -51,7 +53,7 @@
 
           if (!props.uuid) {
             alertType.value = 'error';
-            alertMessage.value = 'Cadastro não iniciado. Volte para a etapa 1.';
+            alertMessage.value = t('cadastro_nao_iniciado');
             showAlert.value = true;
             loading.value = false;
             return;
@@ -61,7 +63,7 @@
 
           if (data.status === 'sucesso' || data.uuid) { 
                 alertType.value = 'success';
-                alertMessage.value = "Cadastro finalizado com sucesso! Obrigado pela preferência.";
+                alertMessage.value = t('cadastro_finalizado');
                 showAlert.value = true; 
                 setTimeout(() => {
                     localStorage.removeItem('cadastro_uuid');
@@ -84,32 +86,32 @@
 
 <template>
   <div class="step-view">
-    <h2 class="md-title" style="margin-bottom: 20px;">Contato</h2>    
+    <h2 class="md-title" style="margin-bottom: 20px;">{{ t('contato') }}</h2>    
     <form @submit.prevent="finalizar">
 
       <div class="md-field">
         <v-text-field
           v-model="form.telefoneCelular"
           v-maska="'(##) #####-####'"
-          label="Telefone Celular"
+           :label="t('telefone_celular_label')"
           required
-          placeholder="(00) 00000-0000"
+             :placeholder="t('telefone_celular_placeholder')"
         />
       </div>  
       <div class="md-field">
         <v-text-field
           v-model="form.telefoneFixo"
           v-maska="'(##) ####-####'"
-          label="Telefone Fixo"
-          placeholder="(00) 0000-0000"
+          :label="t('telefone_fixo_label')"
+          :placeholder="t('telefone_fixo_placeholder')"
         />
       </div>  
       <div class="md-actions">
         <v-btn type="button" @click="$emit('voltar')" class="md-button text" :disabled="loading">
-          Voltar
+          {{ t('voltar') }}
         </v-btn>
         <v-btn type="submit" class="md-button success" :disabled="loading">
-          {{ loading ? 'Enviando...' : 'Concluir Cadastro' }}
+          {{ loading ? t('enviando') : t('concluir_cadastro') }}
         </v-btn>
       </div>
     </form> 
