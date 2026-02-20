@@ -24,12 +24,7 @@ final class CadastroController extends AbstractController
     {
         try {
             $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json');
-
-            $errors = $this->validator->validate($dto);
-            if (count($errors) > 0) {
-                return $this->json(['status'=>'erro','message'=> (string) $errors], 400);
-            }
-
+            
             $cadastro = $this->cadastroService->processarCadastro($dto);
 
             return $this->json([
@@ -86,13 +81,7 @@ final class CadastroController extends AbstractController
     public function atualizar(string $uuid, Request $request): JsonResponse  
     {
         try {
-            $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json');
-
-            $errors = $this->validator->validate($dto);
-            if (count($errors) > 0) {
-                return $this->json(['status'=>'erro','message'=> (string) $errors], 400);
-            }
-
+            $dto = $this->serializer->deserialize($request->getContent(), CadastroDto::class, 'json'); 
 
             $dto->uuid = $dto->uuid ?? $uuid;
 

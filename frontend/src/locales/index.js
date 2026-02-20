@@ -36,7 +36,8 @@ const pt = {
     telefone_fixo_invalid: "Telefone fixo inválido! Use o formato: (00) 0000-0000",
     cadastro_finalizado: "Cadastro finalizado com sucesso! Obrigado pela preferência.",
     erro_finalizar: "Erro ao finalizar cadastro.",
-        campo_obrigatorio: "Este campo é obrigatório",
+    digite_data: "Digite a data de nascimento",
+ 
 };
 
 const en = {
@@ -76,6 +77,8 @@ const en = {
         cadastro_finalizado: "Registration completed successfully! Thank you.",
         erro_finalizar: "Error finishing registration.",
         campo_obrigatorio: "This field is required",
+        digite_data: "Enter the date of birth",
+
 };
 
 const es = {
@@ -115,6 +118,7 @@ const es = {
         cadastro_finalizado: "¡Registro finalizado con éxito! Gracias.",
         erro_finalizar: "Error al finalizar el registro.",
         campo_obrigatorio: "Este campo es obligatorio",
+        digite_data: "Ingrese la fecha de nacimiento",
 };
 
 export default { pt, en, es };
