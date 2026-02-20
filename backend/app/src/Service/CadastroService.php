@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Dto\CadastroDto;
 use App\Entity\Cadastro;
 use App\Repository\CadastroRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -13,7 +12,6 @@ class CadastroService
 {
     public function __construct(
         private readonly CadastroRepository $cadastroRepository,
-        private readonly EntityManagerInterface $entityManager,
         private readonly ValidatorInterface $validator
     ) {}
 
@@ -36,7 +34,7 @@ class CadastroService
     public function obterOuCriarCadastro(?string $uuid): Cadastro
     {
         if ($uuid) {
-            $cadastro = $this->cadastroRepository->findOneBy(['uuid' => $uuid]);
+            $cadastro = $this->cadastroRepository->buscarPorUuid($uuid);
             if (!$cadastro) {
                 throw new \InvalidArgumentException('Cadastro não encontrado para atualização');
             }
@@ -98,9 +96,7 @@ class CadastroService
 
     public function salvarCadastro(Cadastro $cadastro): Cadastro
     {
-        $this->entityManager->persist($cadastro);
-        $this->entityManager->flush();
-
+        $this->cadastroRepository->salvar($cadastro);
         return $cadastro;
     }
 
@@ -138,7 +134,7 @@ class CadastroService
 
     public function buscarCadastro(string $uuid): ?array
     {
-        $cadastro = $this->cadastroRepository->findOneBy(['uuid' => $uuid]);
+        $cadastro = $this->cadastroRepository->buscarPorUuid($uuid);
 
         if (!$cadastro) {
             return null;

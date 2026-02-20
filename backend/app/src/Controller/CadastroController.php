@@ -9,14 +9,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CadastroController extends AbstractController
 {
     public function __construct(
         private readonly CadastroService $cadastroService,
         private readonly SerializerInterface $serializer,
-        private readonly ValidatorInterface $validator
     ) {}
 
     #[Route('/api/cadastro', name: 'cadastro_salvar', methods: ['POST'])]
@@ -30,7 +28,7 @@ final class CadastroController extends AbstractController
             return $this->json([
                 'status' => 'sucesso',
                 'data' => [
-                    'uuid' => $cadastro->getUuid()->toString(), 
+                    'uuid' => $cadastro->getUuid(), 
                     'etapaAtual' => $cadastro->getEtapa(),
                     'message' => $dto->etapaAtual == 3 ? 'Cadastro completo!' : 'Etapa salva com sucesso!'
                 ]
@@ -97,7 +95,7 @@ final class CadastroController extends AbstractController
             return $this->json([
                 'status' => 'sucesso',
                 'data' => [
-                    'uuid' => $cadastro->getUuid()->toString(), 
+                    'uuid' => $cadastro->getUuid(), 
                     'etapaAtual' => $cadastro->getEtapa(),
                     'message' => $dto->etapaAtual == 3 ? 'Cadastro completo!' : 'Etapa salva com sucesso!'
                 ]
